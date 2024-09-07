@@ -1,0 +1,9 @@
+// Conexão com o MongoDB
+mongoose.connect('mongodb+srv://gabrieldcc:Gabriel98$@cluster0.hs43a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Conectado ao MongoDB');
+}).catch((err) => {
+    console.error('Erro ao conectar ao MongoDB:', err);
+});
