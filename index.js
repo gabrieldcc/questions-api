@@ -1,9 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Question = require('./models/Question');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json()); // Middleware para parsing de JSON
+
+// Configuração do CORS
+app.use(cors({
+  origin: '*', // Permite requisições de qualquer origem
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}));
 
 // Configuração da conexão com o MongoDB
 // const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/questionsdb'; // Fallback para localhost
@@ -16,6 +24,7 @@ mongoose.connect(uri)
   .catch(err => {
     console.error('Erro ao conectar ao MongoDB:', err);
   });
+
 
 // Endpoints
 
