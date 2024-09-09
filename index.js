@@ -1,10 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Question = require('./models/Question');
+const axios = require('axios');
+const healthCheck = require('./healthCheck'); 
 const cors = require('cors');
+const router = require('./healthCheck');
+require('dotenv').config(); // Carrega variáveis do arquivo .env
+
 const app = express();
 
-require('dotenv').config(); // Carrega variáveis do arquivo .env
 
 app.use(express.json()); // Middleware para parsing de JSON
 
@@ -14,6 +18,9 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type']
 }));
+
+ // Configuração do middleware de health check
+app.use('/health', healthCheck);
 
 // Configuração da conexão com o MongoDB
  const uri = process.env.MONGO_URI 
@@ -100,3 +107,26 @@ app.delete('/questions/:id', async (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor rodando na porta 3000');
 });
+
+// Iniciar o servidor
+  // Fazer uma requisição à rota de health check
+  // axios.get(`http://localhost:3000/health`)
+  //   .then(response => {
+  //     console.log('Health check OK:', response.data);
+  //   })
+  //   .catch(error => {
+  //     if (error.response) {
+  //       // A resposta foi recebida do servidor, mas o status é diferente de 2xx
+  //       console.error(`Erro no health check - Status: ${error.response.status}`);
+  //       console.error('Headers:', error.response.headers);
+  //       console.error('Data:', error.response.data);
+  //     } else if (error.request) {
+  //       // A requisição foi feita mas nenhuma resposta foi recebida
+  //       console.error('Nenhuma resposta recebida:', error.request);
+  //     } else {
+  //       // Algo aconteceu durante a configuração da requisição
+  //       console.error('Erro ao configurar a requisição:', error.message);
+  //     }
+  //     console.error('Config:', error.config); // Detalhes da configuração da requisição
+  //   });
+
