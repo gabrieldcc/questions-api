@@ -17,19 +17,20 @@ services:
     volumes:
       - mongo-data:/data/db
 
-traefik:
-  image: traefik:v2.10
-  container_name: traefik
-  restart: always
-  command:
-    - "--api.insecure=true"
-    - "--providers.docker=true"
-    - "--entrypoints.web.address=:80"
-    - "--entrypoints.traefik.address=:80"  # Alterado para usar a porta 80
-  ports:
-    - "80:80"    # Expor o Traefik e seu painel de controle na porta 80
-  volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"  # Permite que o Traefik se comunique com o Docker
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80" # Entrada para serviços
+      - "--entrypoints.traefik.address=:8080"  # Entrada para o dashboard
+    ports:
+      - "80:80"    # Porta para acessar a API e Traefik
+      - "8080:8080"  # Porta do painel de controle do Traefik 
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"  # Permite que o Traefik se comunique com o Docker
 
   questions-api:
     image: node:14  # Substitua pela sua imagem Node.js ou crie a partir do Dockerfile
