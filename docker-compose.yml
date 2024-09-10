@@ -17,19 +17,19 @@ services:
     volumes:
       - mongo-data:/data/db
 
-  traefik:
-    image: traefik:v2.10
-    container_name: traefik
-    restart: always
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"  # Porta para expor o Traefik e seus serviços
-      - "8080:8080"  # Porta do dashboard do Traefik
-    volumes:
-       - "/var/run/docker.sock:/var/run/docker.sock"  # Permite que o Traefik se comunique com o Docker
+traefik:
+  image: traefik:v2.10
+  container_name: traefik
+  restart: always
+  command:
+    - "--api.insecure=true"
+    - "--providers.docker=true"
+    - "--entrypoints.web.address=:80"
+    - "--entrypoints.traefik.address=:80"  # Alterado para usar a porta 80
+  ports:
+    - "80:80"    # Expor o Traefik e seu painel de controle na porta 80
+  volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"  # Permite que o Traefik se comunique com o Docker
 
   questions-api:
     image: node:14  # Substitua pela sua imagem Node.js ou crie a partir do Dockerfile
@@ -40,7 +40,7 @@ services:
       - "3000:3000"  # Porta onde a API escuta
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.questions-api.rule=Host(`api.questions.localhost`)"
+      - "traefik.http.routers.questions-api.rule=Host(`questions-api-production.up.railway.app`)"
       - "traefik.http.services.questions-api.loadbalancer.server.port=3000"
 
 volumes:
