@@ -108,6 +108,14 @@ app.listen(3000, () => {
   console.log('Servidor rodando na porta 3000');
 });
 
+app.listen(8080, () => {
+  console.log('Servidor rodando na porta 8080');
+});
+
+app.listen(80, () => {
+  console.log('Servidor rodando na porta 80');
+});
+
 // Iniciar o servidor
   // Fazer uma requisição à rota de health check
   // axios.get(`http://localhost:3000/health`)
