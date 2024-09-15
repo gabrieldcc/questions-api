@@ -1,16 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Question = require('./models/Question');
-const axios = require('axios');
 const healthCheck = require('./healthCheck'); 
 const cors = require('cors');
-const router = require('./healthCheck');
+const questionsRoutes = require('./src/routes/questions')
 require('dotenv').config(); // Carrega variáveis do arquivo .env
 
 const app = express();
 
 
 app.use(express.json()); // Middleware para parsing de JSON
+app.use('/', questionsRoutes); // Roteador para /questions
+app.use('/health', healthCheck);  // Configuração do middleware de health check
+
 
 // Configuração do CORS
 app.use(cors({
@@ -19,8 +20,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
- // Configuração do middleware de health check
-app.use('/health', healthCheck);
 
 // Configuração da conexão com o MongoDB
  const uri = process.env.MONGO_URI 
@@ -29,7 +28,6 @@ app.use('/health', healthCheck);
   console.error('MONGO_URI não está definida no arquivo .env');
   process.exit(1);
 }
-//const uri = 'mongodb+srv://gabrieldcc:Gabriel98$@cluster0.hs43a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 mongoose.connect(uri)
   .then(() => {
@@ -40,81 +38,74 @@ mongoose.connect(uri)
   });
 
 
-// Endpoints
+// // Endpoints
 
-// Criar uma nova questão
-app.post('/questions', async (req, res) => {
-  try {
-    console.log('Request Body:', req.body); // Verifique o que está sendo enviado
-    const question = new Question(req.body);
-    await question.save();
-    res.status(201).send(question);
-  } catch (err) {
-    console.error('Error:', err); // Exiba o erro no console
-    res.status(400).send(err);
-  }
-});
+// // Criar uma nova questão
+// app.post('/questions', async (req, res) => {
+//   try {
+//     console.log('Request Body:', req.body); // Verifique o que está sendo enviado
+//     const question = new Question(req.body);
+//     await question.save();
+//     res.status(201).send(question);
+//   } catch (err) {
+//     console.error('Error:', err); // Exiba o erro no console
+//     res.status(400).send(err);
+//   }
+// });
 
 // Obter todas as questões
-app.get('/questions', async (req, res) => {
-  try {
-    const questions = await Question.find();
-    res.status(200).send(questions);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// app.get('/questions', async (req, res) => {
+//   try {
+//     const questions = await Question.find();
+//     res.status(200).send(questions);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
 
-// Obter uma questão por ID
-app.get('/questions/:id', async (req, res) => {
-  try {
-    const question = await Question.findById(req.params.id);
-    if (!question) {
-      return res.status(404).send('Questão não encontrada');
-    }
-    res.status(200).send(question);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// // Obter uma questão por ID
+// app.get('/questions/:id', async (req, res) => {
+//   try {
+//     const question = await Question.findById(req.params.id);
+//     if (!question) {
+//       return res.status(404).send('Questão não encontrada');
+//     }
+//     res.status(200).send(question);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
 
-// Atualizar uma questão por ID
-app.put('/questions/:id', async (req, res) => {
-  try {
-    const question = await Question.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!question) {
-      return res.status(404).send('Questão não encontrada');
-    }
-    res.status(200).send(question);
-  } catch (err) {
-    res.status(400).send(err);
-  }
-});
+// // Atualizar uma questão por ID
+// app.put('/questions/:id', async (req, res) => {
+//   try {
+//     const question = await Question.findByIdAndUpdate(req.params.id, req.body, { new: true });
+//     if (!question) {
+//       return res.status(404).send('Questão não encontrada');
+//     }
+//     res.status(200).send(question);
+//   } catch (err) {
+//     res.status(400).send(err);
+//   }
+// });
 
-// Deletar uma questão por ID
-app.delete('/questions/:id', async (req, res) => {
-  try {
-    const question = await Question.findByIdAndDelete(req.params.id);
-    if (!question) {
-      return res.status(404).send('Questão não encontrada');
-    }
-    res.status(200).send('Questão deletada com sucesso');
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// // Deletar uma questão por ID
+// app.delete('/questions/:id', async (req, res) => {
+//   try {
+//     const question = await Question.findByIdAndDelete(req.params.id);
+//     if (!question) {
+//       return res.status(404).send('Questão não encontrada');
+//     }
+//     res.status(200).send('Questão deletada com sucesso');
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
 
 app.listen(3000, () => {
   console.log('Servidor rodando na porta 3000');
 });
 
-app.listen(8080, () => {
-  console.log('Servidor rodando na porta 8080');
-});
-
-app.listen(80, () => {
-  console.log('Servidor rodando na porta 80');
-});
 
 // Iniciar o servidor
   // Fazer uma requisição à rota de health check
