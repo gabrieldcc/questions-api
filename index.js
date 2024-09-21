@@ -7,12 +7,6 @@ require('dotenv').config(); // Carrega variáveis do arquivo .env
 
 const app = express();
 
-
-app.use(express.json()); // Middleware para parsing de JSON
-app.use('/', questionsRoutes); // Roteador para /questions
-app.use('/health', healthCheck);  // Configuração do middleware de health check
-
-
 // Configuração do CORS
 app.use(cors({
   origin: '*', // Permite requisições de qualquer origem
@@ -20,6 +14,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
+app.use(express.json()); // Middleware para parsing de JSON
+app.use('/', questionsRoutes); // Roteador para /questions
+app.use('/health', healthCheck);  // Configuração do middleware de health check
 
 // Configuração da conexão com o MongoDB
  const uri = process.env.MONGO_URI 
